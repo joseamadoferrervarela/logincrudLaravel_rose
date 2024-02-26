@@ -12,7 +12,9 @@ class AlumnoController extends Controller
      */
     public function index()
     {
-        return view('alumnos.index');
+        $datos=Alumno::paginate(5);
+        return view('alumnos.index', compact('datos'));
+        
     }
 
     /**
@@ -20,7 +22,7 @@ class AlumnoController extends Controller
      */
     public function create()
     {
-        //
+        return view('alumnos.create');
     }
 
     /**
@@ -28,7 +30,16 @@ class AlumnoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // $datosAlumno= request()->all();
+        $datosAlumno=request()->except('_token');
+        
+        if ($request->hasFile('foto')) {
+            $datosAlumno['foto']=$request->
+            file('foto')->store('uploads', 'public');
+            # code...
+        }
+        Alumno::insert($datosAlumno);
+        return response()->json($datosAlumno);
     }
 
     /**
